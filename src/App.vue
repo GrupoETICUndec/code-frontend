@@ -1,31 +1,82 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-toolbar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <router-link to="/"><span>CODE</span></router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+        v-if="isAuthenticated"
+        flat
+        to="/profile"
+      >
+        <span class="mr-2">Profile</span>
+      </v-btn>
+      <v-btn
+        v-if="isAuthenticated"
+        flat
+        to="/about"
+      >
+        <span class="mr-2">About</span>
+      </v-btn>
+      <v-btn
+        v-if="!isAuthenticated"
+        flat
+        @click.prevent="login"
+      >
+        <span class="mr-2">Login</span>
+      </v-btn>
+      <v-btn
+        v-if="isAuthenticated"
+        flat
+        @click.prevent="logout"
+      >
+        <span class="mr-2">Logout</span>
+      </v-btn>
+    </v-toolbar>
+
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+  </v-app>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      isAuthenticated: false
+    };
+  },
+  async created() {
+    try {
+      await this.$auth.renewTokens();
+    } catch (e) {
+      //console.log(e);
+    }
+  },
+  methods: {
+    login() {
+      this.$auth.login();
+    },
+    logout() {
+      this.$auth.logOut();
+    },
+    handleLoginEvent(data) {
+      this.isAuthenticated = data.loggedIn;
+      this.profile = data.profile;
+    }
+  }
+};
+
+</script>
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+a{
+  text-decoration: none;
 }
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+a:hover{
+  text-decoration: underline;
 }
 </style>
