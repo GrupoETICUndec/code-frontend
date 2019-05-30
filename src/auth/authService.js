@@ -3,13 +3,15 @@ import EventEmitter from 'events';
 import authConfig from '../auth_config.js';
 
 const localStorageKey = 'loggedIn';
+const localStorageFullTokenKey = 'access_token'
 const loginEvent = 'loginEvent' ;
 
 const webAuth = new auth0.WebAuth({
   domain: authConfig.domain,
   redirectUri: `${window.location.origin}/callback`,
+  audience: authConfig.audience,
   clientID: authConfig.clientId,
-  responseType: 'id_token',
+  responseType: 'token id_token',
   scope: 'openid profile email'
 });
 
@@ -43,12 +45,11 @@ class AuthService extends EventEmitter {
   localLogin(authResult) {
     this.idToken = authResult.idToken;
     this.profile = authResult.idTokenPayload;
-
     // Convert the JWT expiry time from seconds to milliseconds
     this.tokenExpiry = new Date(this.profile.exp * 1000);
 
     localStorage.setItem(localStorageKey, 'true');
-
+    localStorage.setItem(localStorageFullTokenKey, authResult.accessToken)
     this.emit(loginEvent, {
       loggedIn: true,
       profile: authResult.idTokenPayload,
@@ -75,7 +76,7 @@ class AuthService extends EventEmitter {
 
   logOut() {
     localStorage.removeItem(localStorageKey);
-
+    localStorage.removeItem(localStorageFullTokenKey);
     this.idToken = null;
     this.tokenExpiry = null;
     this.profile = null;

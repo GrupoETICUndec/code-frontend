@@ -15,9 +15,9 @@
       <v-btn
         v-if="isAuthenticated"
         flat
-        to="/about"
+        to="/problems"
       >
-        <span class="mr-2">About</span>
+        <span class="mr-2">Problems</span>
       </v-btn>
       <v-btn
         v-if="!isAuthenticated"
