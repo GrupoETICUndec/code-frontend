@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-if="$apollo.loading">Loading...</div>
-    <ul v-for="problem in problems" v-bind:key="problem.id">
-      <li>{{problem.name}}</li>
+    <ul v-for="problem in problems" v-bind:key="problem._id">
+      <li><router-link :to="{ name: 'problem', params:{id: problem._id} }">{{problem.name}}</router-link></li>
     </ul>
   </div>
 </template>
