@@ -3,6 +3,8 @@ import VueApollo from 'vue-apollo'
 import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context'
+import { onError } from 'apollo-link-error'
+
 // Install the vue plugin
 Vue.use(VueApollo)
 
@@ -16,6 +18,11 @@ export const filesRoot = process.env.VUE_APP_FILES_ROOT || httpEndpoint.substr(0
 
 Vue.prototype.$filesRoot = filesRoot
 
+//Error link
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message))
+})
+
 // Config
 const defaultOptions = {
   // You can use `https` for secure connection (recommended in production)
@@ -23,6 +30,7 @@ const defaultOptions = {
   // You can use `wss` for secure connection (recommended in production)
   // Use `null` to disable subscriptions
   //wsEndpoint: process.env.VUE_APP_GRAPHQL_WS || 'ws://localhost:5000/graphql',
+  wsEndpoint: null,
   // LocalStorage token
   tokenName: AUTH_TOKEN,
   // Enable Automatic Query persisting with Apollo Engine
@@ -39,7 +47,7 @@ const defaultOptions = {
         Authorization: `Bearer ${token}`
       }
     })
-  ),
+  ).concat(errorLink),
   // Override default apollo link
   // note: don't override httpLink here, specify httpLink options in the
   // httpLinkOptions property of defaultOptions.
@@ -49,9 +57,9 @@ const defaultOptions = {
   // cache: myCache
 
   // Override the way the Authorization header is set
-  //  getAuth: () => {
+  // getAuth: () => {
   //   return `Bearer ${token}`;
-  //  }
+  // }
 
   // Additional ApolloClient options
   // apollo: { ... }
