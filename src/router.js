@@ -1,8 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+
 import ProblemList from './views/ProblemList.vue'
 import Problem from './views/Problem.vue'
+
+import SolutionList from './views/SolutionList'
+
 import auth from './auth/authService'
 import Callback from './components/Callback.vue'
 import Profile from './views/Profile.vue'
@@ -27,6 +31,12 @@ const router = new Router({
       path: '/problems/:id',
       name: 'problem',
       component: Problem,
+      meta: {requiresAuth:true}
+    },
+    {
+      path: '/solutions',
+      name: 'solutionList',
+      component: SolutionList,
       meta: {requiresAuth:true}
     },
     {

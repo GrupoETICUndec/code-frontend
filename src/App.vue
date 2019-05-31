@@ -20,6 +20,13 @@
         <span class="mr-2">Problems</span>
       </v-btn>
       <v-btn
+        v-if="isAuthenticated"
+        flat
+        to="/solutions"
+      >
+        <span class="mr-2">My Solutions</span>
+      </v-btn>
+      <v-btn
         v-if="!isAuthenticated"
         flat
         @click.prevent="login"
