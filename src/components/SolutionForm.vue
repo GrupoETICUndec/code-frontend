@@ -2,11 +2,13 @@
   <div>
     <form @submit.prevent="sendSolution">
       <textarea v-model="source_code" placeholder="Insert Code here"></textarea>
-      <select v-model="language">
+      <br/>
+      <select v-model="language" style="border: 1px solid black">
        <option value="4"  selected>C (gcc 7.2.0)</option>
        <option value="10" >C++ (g++ 7.2.0)</option>
        <option value="34" >Python (3.6.0)</option>
       </select>
+      <br/>
       <button type="submit"> Submit</button>
     </form>
   </div>  
@@ -26,8 +28,8 @@ export default {
   methods:{
     sendSolution(){
       const solution = {
-        problemId:    JSON.stringify(this.source_code),
-        source_code:  JSON.stringify(this.problemId),
+        problemId:    JSON.stringify(this.problemId),
+        source_code:  JSON.stringify(this.source_code),
         language:     parseInt(this.language)
       }
       this.$apollo.mutate({
@@ -43,7 +45,7 @@ export default {
         variables:{
           solution
         },
-      })
+      }).then(data=>console.log(data))
     }
   },
 }
